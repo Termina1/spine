@@ -1,11 +1,31 @@
 describe("AjaxCache", function() {
 
-  var params, url, data;
+  var params, url, data, User, jqXHR;
 
   beforeEach(function() {
     params = { text: 1, data: 'test', fn: function() {}, arr: [] }
     url = '/host?test';
     data = { test: 1, change: 'some test', arr: [1, 2] }
+    Spine.Ajax.clearQueue();
+    Spine.AjaxCache.cleanCache();
+
+    User = Spine.Model.setup("User", ["first", "last"]);
+    User.extend(Spine.Model.Ajax);
+    User.extend(Spine.Model.AjaxCache);
+
+    jqXHR = $.Deferred();
+
+    $.extend(jqXHR, {
+      readyState: 0,
+      setRequestHeader: function() { return this; },
+      getAllResponseHeaders: function() {},
+      getResponseHeader: function() {},
+      overrideMimeType: function() { return this; },
+      abort: function() { this.reject(arguments); return this; },
+      success: jqXHR.done,
+      error: jqXHR.fail,
+      complete: jqXHR.done
+    });
 
   })
 
@@ -21,6 +41,12 @@ describe("AjaxCache", function() {
 
   it("creates valid key string", function() {
     expect(Spine.AjaxCache.createKeyString(url, params)).toEqual("/host?testtext=1data=test")
+  })
+
+  it("sends ajax request if no cache", function() {
+    spyOn(jQuery, "ajax").andReturn(jqXHR);
+    User.fetch();
+    expect(jQuery.ajax).toHaveBeenCalled();
   })
 
 });

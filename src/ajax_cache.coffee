@@ -5,7 +5,7 @@ class Cached
 
   exists: -> @data?
 
-Spine.AjaxCache =
+AjaxCache =
 
   #MurMurHash3 implementation
 
@@ -48,6 +48,9 @@ Spine.AjaxCache =
 
   globalCache: {}
 
+  cleanCache: ->
+    globalCache = {}
+
   createKeyString: (url, params) ->
     result = url
     for name, el of params
@@ -71,13 +74,15 @@ Cached::invalidate = ->
 
 
 Spine.Model.AjaxCache =
-  fetch: (params, options) ->
-    url = Spine.Ajax.getUrl(@)
+  fetch: (params) ->
+    url = Spine.Ajax.getURL(@)
     cache = AjaxCache.get url, params
     if cache.exists() and not params.noCache
       @trigger 'ajaxSuccess', cache.getData()...
     else
       @one 'ajaxSuccess', (data, status, xhr) -> AjaxCache.store url, params, [data, status, xhr]  
       super params, options
+
+Spine.AjaxCache = AjaxCache
 
 
