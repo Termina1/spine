@@ -35,7 +35,7 @@ describe("AjaxCache", function() {
 
   it("can hash", function() {
     var time = new Date().getMilliseconds();
-    expect(Spine.AjaxCache.hashf('sometest really long test')).toEqual(3883037902);
+    expect(Spine.AjaxCache.hashf('sometest really long test')).toEqual('sometest really long test');
     expect((new Date().getMilliseconds()) - time).toBeLessThan(10);
   })
 
