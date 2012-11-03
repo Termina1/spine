@@ -50,6 +50,7 @@ Spine.Model.AjaxCache =
     cache = AjaxCache.get url, params
     if cache.exists() and not params?.noCache
       @trigger 'ajaxSuccess', cache.getData()...
+      @refresh(cache.getData()[0], {})
       true
     else
       @one 'ajaxSuccess', (data, status, xhr) => 
