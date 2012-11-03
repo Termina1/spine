@@ -63,7 +63,6 @@ describe("AjaxCache", function() {
   })
 
   it("should make ajax call on after cache invalidations", function() {
-    console.log(Spine.AjaxCache);
     data = [{id: 8}, {id: 200}]
     dataTest = [{id: 8}, {id: 200}]
     spy = spyOn(jQuery, "ajax").andReturn(jqXHR);
