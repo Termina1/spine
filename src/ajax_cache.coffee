@@ -5,6 +5,9 @@ class Cached
 
   exists: -> @data?
 
+  invalidate: ->
+    delete AjaxCache.globalCache[@keyStr]
+
 AjaxCache =
 
   #MurMurHash3 implementation
@@ -49,7 +52,7 @@ AjaxCache =
   globalCache: {}
 
   cleanCache: ->
-    globalCache = {}
+    @globalCache = {}
 
   createKeyString: (url, params) ->
     result = url
@@ -62,26 +65,32 @@ AjaxCache =
 
   store: (url, params, data) ->
     keyStr = @hashKey url, params
-    @globalCache[keyStr] = new Cached data
-    data
+    @globalCache[keyStr] = new Cached keyStr, data
+    @globalCache[keyStr]
 
   get: (url, params) ->
     keyStr = @hashKey url, params
     @globalCache[keyStr] or new Cached
 
-Cached::invalidate = ->
-  delete AjaxCache.globalCache[@keyStr]
-
 
 Spine.Model.AjaxCache =
-  fetch: (params) ->
+  extended: ->
+    @caches = []
+
+  invalidate: ->
+    cache.invalidate() for cache in @caches
+
+  fetchCache: (params) ->
     url = Spine.Ajax.getURL(@)
     cache = AjaxCache.get url, params
-    if cache.exists() and not params.noCache
+    if cache.exists() and not params?.noCache
       @trigger 'ajaxSuccess', cache.getData()...
+      true
     else
-      @one 'ajaxSuccess', (data, status, xhr) -> AjaxCache.store url, params, [data, status, xhr]  
-      super params, options
+      @one 'ajaxSuccess', (data, status, xhr) => 
+        @caches.push AjaxCache.store url, params, [data, status, xhr]
+      @fetch(params)
+      
 
 Spine.AjaxCache = AjaxCache
 

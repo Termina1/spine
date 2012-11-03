@@ -45,8 +45,37 @@ describe("AjaxCache", function() {
 
   it("sends ajax request if no cache", function() {
     spyOn(jQuery, "ajax").andReturn(jqXHR);
-    User.fetch();
+    User.fetchCache();
     expect(jQuery.ajax).toHaveBeenCalled();
+  })
+
+  it("should return cache hit", function() {
+    data = [{id: 8}, {id: 200}]
+    dataTest = [{id: 8}, {id: 200}]
+    spy = spyOn(jQuery, "ajax").andReturn(jqXHR);
+    User.fetchCache();
+    User.bind('ajaxSuccess', function(data) {
+      expect(data).toEqual(dataTest);
+    });
+    jqXHR.resolve(data)
+    User.fetchCache();
+    expect(spy.callCount).toBe(1);
+  })
+
+  it("should make ajax call on after cache invalidations", function() {
+    console.log(Spine.AjaxCache);
+    data = [{id: 8}, {id: 200}]
+    dataTest = [{id: 8}, {id: 200}]
+    spy = spyOn(jQuery, "ajax").andReturn(jqXHR);
+    User.fetchCache();
+    User.bind('ajaxSuccess', function(data) {
+      expect(data).toEqual(dataTest);
+    });
+    jqXHR.resolve(data);
+    User.fetchCache();
+    User.invalidate();
+    User.fetchCache();
+    expect(spy.callCount).toBe(2);
   })
 
 });
