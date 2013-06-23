@@ -518,6 +518,7 @@ class Controller extends Module
     @el.remove()
     @unbind()
     @stopListening()
+    Spine.Route.trigger 'released', @ if Spine.Route
 
   $: (selector) -> $(selector, @el)
 
