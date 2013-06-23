@@ -125,7 +125,7 @@ class Singleton extends Base
       params,
       type: 'POST'
       data: JSON.stringify(@record)
-      url:  Ajax.getURL(@model)
+      url:  Ajax.getURL(@record)
     ).done(@recordResponse(options))
      .fail(@failResponse(options))
 
@@ -182,8 +182,9 @@ Include =
 
   url: (args...) ->
     url = Ajax.getURL(@constructor)
-    url += '/' unless url.charAt(url.length - 1) is '/'
-    url += encodeURIComponent(@id)
+    if @cid isnt @id
+      url += '/' unless url.charAt(url.length - 1) is '/'
+      url += encodeURIComponent(@id)
     args.unshift(url)
     args.join('/')
 
