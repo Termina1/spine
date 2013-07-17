@@ -39,4 +39,25 @@ describe('Bindings', function() {
     expect(model.value).toEqual('new test');
   });
 
+  it("changes source model of bindings", function() {
+    md = new TestModel({ value: 'another test' });
+
+    controller.changeBindingSource(md);
+    expect(controller.input.val()).toEqual('another test');
+
+    md.value = 'new test';
+    md.save();
+    expect(controller.input.val()).toEqual('new test');
+    expect(model.value).toEqual('init');
+
+    controller.input.val('new test 2');
+    controller.input.trigger('change');
+    expect(md.value).toEqual('new test 2');
+    expect(model.value).toEqual('init');
+
+    model.value = 'init2';
+    model.save();
+    expect(controller.input.val()).not.toEqual('init2');
+  });
+
 });
