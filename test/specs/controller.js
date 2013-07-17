@@ -217,6 +217,8 @@ describe("Controller", function(){
 
   });
 
+  });
+
   describe("When using inheritance", function() {
     beforeEach(function() {
       element = $('<div/>').html('<div class="a-el"></div><div class="b-el"></div><div class="c-el"></div>');
@@ -262,4 +264,4 @@ describe("Controller", function(){
       expect(c.cEventHandler).toHaveBeenCalled();
     });
   });
-});
+  });
