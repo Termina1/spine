@@ -1,11 +1,12 @@
 describe('Bindings', function() {
 
-  TestController = Spine.Controller.sub({});
-  TestController.model = 'tmodel';
-  TestController.elements = { '.testValues': 'input' }
-  TestController.bindings = {
-    '.testValues': 'value'
-  };
+  TestController = Spine.Controller.sub({
+    modelVar: 'tmodel',
+    elements: { '.testValues': 'input' },
+    bindings: {
+      '.testValues': 'value'
+    }
+  });
 
   TestModel = Spine.Model.sub({});
   TestModel.configure('TestModel', 'value');
