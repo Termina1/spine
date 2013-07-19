@@ -217,6 +217,32 @@ describe("Controller", function(){
 
   });
 
+    describe("When releasing controller", function() {
+
+      it("should stop listening if the controller is released", function(){
+        users.listenTo(asset, 'event1', spy);
+        asset.trigger("event1");
+        expect(spy).toHaveBeenCalled();
+        spy.reset();
+        users.release();
+        asset.trigger("event1");
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it("should trigger 'released' event on Spine.Route if it exists", function() {
+        // saving old router object to be able to restore it after stub
+        router = Spine.Route;
+
+        Spine.Route = jasmine.createSpyObj('Spine.Route', ['trigger'])
+        users.release();
+        expect(Spine.Route.trigger).toHaveBeenCalledWith('released', users);
+
+        // restoring route object
+        Spine.Route = router;
+      });
+
+    });
+
   });
 
   describe("When using inheritance", function() {
