@@ -86,5 +86,7 @@ BindingsInstance =
     model.bind 'change', =>
       @valueSetter.setValue @$(selector), model[@_getField(field)], field.setter
 
-Spine.Controller.extend BindingsClass
-Spine.Controller.include BindingsInstance
+Spine.Bindings =
+  extended: ->
+    @extend BindingsClass
+    @include BindingsInstance
