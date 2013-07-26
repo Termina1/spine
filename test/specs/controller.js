@@ -215,7 +215,6 @@ describe("Controller", function(){
       expect(spy2).toHaveBeenCalled();
     });
 
-  });
 
     describe("When releasing controller", function() {
 
