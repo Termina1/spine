@@ -72,13 +72,16 @@ BindingsInstance =
 
   changeBindingSource: (model) ->
     @getModel().unbind 'change'
-    @walkBindings (selector) => @el.off 'change', selector
+    @walkBindings (selector) =>
+      selector = false if selector is 'self'
+      @el.off 'change', selector
     @setModel model
     @_forceModelBindings model
     do @applyBindings
 
   _bindModelToEl: (model, field, selector) ->
     self = @
+    selector = false if selector is 'self'
     @el.on 'change', selector, ->
       model[self._getField(field)] = self.valueSetter.getValue $(this), field.getter
 
